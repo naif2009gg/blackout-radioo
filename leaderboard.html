@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Black Out | لوحة الترتيب</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Cairo:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold:   #f59e0b;
+    --silver: #94a3b8;
+    --bronze: #b45309;
+    --bg:     #030712;
+    --card:   #0d1117;
+    --border: rgba(245,158,11,0.15);
+    --text:   #e2e8f0;
+    --muted:  #64748b;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    font-family: 'Cairo', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* particles */
+  .particles { position:fixed; inset:0; pointer-events:none; z-index:0; }
+  .particle {
+    position:absolute; bottom:-10px; border-radius:50%;
+    background: rgba(245,158,11,0.4);
+    animation: floatUp linear infinite;
+  }
+  @keyframes floatUp {
+    0%   { transform: translateY(0) scale(1);   opacity:.6; }
+    100% { transform: translateY(-110vh) scale(0); opacity:0; }
+  }
+
+  /* ===== LOGIN ===== */
+  .login-wrap {
+    position: fixed; inset: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: center;
+    background: radial-gradient(ellipse at center, #0d1117 0%, #030712 100%);
+  }
+  .login-box {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 48px 40px;
+    width: min(440px, 92vw);
+    text-align: center;
+    box-shadow: 0 0 60px rgba(245,158,11,.08);
+    animation: fadeInUp .5s ease both;
+  }
+  @keyframes fadeInUp {
+    from { opacity:0; transform:translateY(24px); }
+    to   { opacity:1; transform:translateY(0); }
+  }
+  .login-logo { width: 80px; height: 80px; object-fit: contain; margin-bottom: 16px; border-radius: 50%; }
+  .login-title { font-family: 'Orbitron', sans-serif; font-size: 1.3rem; color: var(--gold); margin-bottom: 4px; }
+  .login-sub { color: var(--muted); font-size: .85rem; margin-bottom: 28px; }
+  .login-divider { height:1px; background: var(--border); margin-bottom:28px; }
+  .login-label { display:block; text-align:right; font-size:.82rem; color:var(--muted); margin-bottom:6px; }
+  .login-input {
+    width:100%; padding:12px 16px;
+    background:#111827; border:1px solid rgba(255,255,255,.08);
+    border-radius:10px; color:var(--text); font-family:'Cairo',sans-serif; font-size:.9rem;
+    transition:.2s; outline:none; margin-bottom:20px; text-align:right;
+  }
+  .login-input:focus { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(245,158,11,.1); }
+  .login-btn {
+    width:100%; padding:13px; background: linear-gradient(135deg,#d97706,#f59e0b);
+    border:none; border-radius:10px; color:#000; font-family:'Cairo',sans-serif;
+    font-size:1rem; font-weight:700; cursor:pointer; transition:.2s;
+  }
+  .login-btn:hover { transform:translateY(-1px); box-shadow:0 8px 20px rgba(245,158,11,.3); }
+  .login-error {
+    margin-top:14px; padding:10px 14px; background:rgba(239,68,68,.1);
+    border:1px solid rgba(239,68,68,.3); border-radius:8px;
+    color:#fca5a5; font-size:.85rem;
+  }
+
+  /* ===== MAIN ===== */
+  .main-wrap { position:relative; z-index:1; display:none; }
+  .main-wrap.visible { display:block; animation:fadeInUp .5s ease both; }
+
+  header {
+    background: linear-gradient(180deg, rgba(13,17,23,1) 0%, rgba(3,7,18,0) 100%);
+    padding: 24px 32px;
+    display: flex; align-items: center; gap: 16px;
+    border-bottom: 1px solid var(--border);
+    position: sticky; top: 0; z-index: 50; backdrop-filter: blur(12px);
+  }
+  header img { width:44px; height:44px; border-radius:50%; object-fit:contain; }
+  .header-text h1 { font-family:'Orbitron',sans-serif; font-size:1.1rem; color:var(--gold); }
+  .header-text p  { font-size:.78rem; color:var(--muted); }
+  .header-badge {
+    margin-right: auto;
+    background: rgba(245,158,11,.1); border:1px solid rgba(245,158,11,.2);
+    padding:4px 14px; border-radius:20px; font-size:.78rem; color:var(--gold);
+  }
+  .live-dot { width:8px;height:8px;border-radius:50%;background:#22c55e;
+    box-shadow:0 0 0 0 rgba(34,197,94,.4); animation:pulse 1.5s infinite; display:inline-block; margin-left:6px; }
+  @keyframes pulse { 0%,100%{box-shadow:0 0 0 0 rgba(34,197,94,.4);} 50%{box-shadow:0 0 0 6px rgba(34,197,94,0);} }
+
+  .container { max-width: 900px; margin: 0 auto; padding: 40px 20px 80px; }
+
+  /* stats row */
+  .stats-row { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-bottom:36px; }
+  .stat-card {
+    background:var(--card); border:1px solid var(--border); border-radius:14px;
+    padding:20px; text-align:center;
+  }
+  .stat-num { font-family:'Orbitron',sans-serif; font-size:2rem; font-weight:700; color:var(--gold); }
+  .stat-label { font-size:.78rem; color:var(--muted); margin-top:4px; }
+
+  /* section title */
+  .section-title {
+    font-family:'Orbitron',sans-serif; font-size:.85rem; letter-spacing:.1em;
+    color:var(--gold); margin-bottom:20px; display:flex; align-items:center; gap:10px;
+  }
+  .section-title::after { content:''; flex:1; height:1px; background:var(--border); }
+
+  /* top 3 podium */
+  .podium { display:flex; align-items:flex-end; justify-content:center; gap:12px; margin-bottom:40px; }
+  .podium-item {
+    flex:1; max-width:200px; text-align:center;
+    background:var(--card); border:1px solid var(--border); border-radius:16px;
+    padding:20px 12px; position:relative; transition:.2s;
+  }
+  .podium-item:hover { transform:translateY(-4px); border-color:rgba(245,158,11,.3); }
+  .podium-item.first  { border-color:rgba(245,158,11,.4); box-shadow:0 0 30px rgba(245,158,11,.1); }
+  .podium-item.second { order:-1; }
+  .podium-crown { font-size:1.8rem; margin-bottom:8px; }
+  .podium-rank-badge {
+    position:absolute; top:-12px; left:50%; transform:translateX(-50%);
+    width:28px;height:28px; border-radius:50%; display:flex;align-items:center;justify-content:center;
+    font-weight:700; font-size:.8rem; font-family:'Orbitron',sans-serif;
+  }
+  .podium-item.first  .podium-rank-badge { background:var(--gold); color:#000; }
+  .podium-item.second .podium-rank-badge { background:var(--silver); color:#000; }
+  .podium-item.third  .podium-rank-badge { background:var(--bronze); color:#fff; }
+  .podium-name  { font-weight:700; font-size:.95rem; margin-bottom:4px; word-break:break-word; }
+  .podium-score { font-family:'Orbitron',sans-serif; font-size:1.6rem; color:var(--gold); }
+  .podium-label { font-size:.72rem; color:var(--muted); }
+  .podium-rank-text { font-size:.72rem; color:var(--muted); margin-top:4px; }
+
+  /* table */
+  .table-wrap {
+    background:var(--card); border:1px solid var(--border); border-radius:16px; overflow:hidden;
+  }
+  table { width:100%; border-collapse:collapse; }
+  thead { background:rgba(245,158,11,.06); }
+  thead th { padding:14px 20px; font-size:.78rem; color:var(--muted); font-weight:600; text-align:right; border-bottom:1px solid var(--border); }
+  tbody tr { border-bottom:1px solid rgba(255,255,255,.04); transition:.15s; }
+  tbody tr:last-child { border-bottom:none; }
+  tbody tr:hover { background:rgba(245,158,11,.03); }
+  tbody td { padding:14px 20px; font-size:.88rem; }
+  .rank-cell { font-family:'Orbitron',sans-serif; font-weight:700; font-size:.85rem; }
+  .rank-cell.gold   { color:var(--gold); }
+  .rank-cell.silver { color:var(--silver); }
+  .rank-cell.bronze { color:var(--bronze); }
+  .rank-cell.normal { color:var(--muted); }
+  .name-cell { font-weight:600; }
+  .badge-rank { font-size:.72rem; color:var(--muted); display:block; margin-top:2px; }
+  .score-cell { font-family:'Orbitron',sans-serif; color:var(--gold); font-size:.9rem; }
+  .date-cell  { color:var(--muted); font-size:.78rem; }
+
+  /* empty */
+  .empty-state { text-align:center; padding:60px 20px; color:var(--muted); }
+  .empty-state .icon { font-size:3rem; margin-bottom:12px; }
+
+  /* loading */
+  .loading { text-align:center; padding:60px; color:var(--muted); }
+  .spin { width:32px;height:32px; border:3px solid rgba(245,158,11,.2); border-top-color:var(--gold);
+    border-radius:50%; animation:spin .8s linear infinite; margin:0 auto 12px; }
+  @keyframes spin { to{transform:rotate(360deg)} }
+
+  /* refresh btn */
+  .refresh-btn {
+    padding:8px 20px; background:transparent; border:1px solid var(--border);
+    border-radius:8px; color:var(--muted); font-family:'Cairo',sans-serif;
+    cursor:pointer; font-size:.82rem; transition:.2s; margin-right:auto;
+  }
+  .refresh-btn:hover { border-color:var(--gold); color:var(--gold); }
+
+  .hidden { display:none !important; }
+
+  @media(max-width:600px) {
+    .stats-row { grid-template-columns:1fr 1fr; }
+    .podium { flex-direction:column; align-items:center; }
+    .podium-item { max-width:100%; width:100%; }
+    .podium-item.second { order:0; }
+    thead th:nth-child(4), tbody td:nth-child(4) { display:none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="particles" id="particles"></div>
+
+<!-- ===== LOGIN ===== -->
+<div class="login-wrap" id="loginWrap">
+  <div class="login-box">
+    <img src="logo.gif" alt="Logo" class="login-logo">
+    <div class="login-title">لوحة الترتيب</div>
+    <div class="login-sub">Black Out · نظام الراديو</div>
+    <div class="login-divider"></div>
+    <label class="login-label">كود الدخول <span style="color:#ef4444">*</span></label>
+    <input type="password" id="lbCode" placeholder="••••••••" class="login-input">
+    <button class="login-btn" onclick="doLbLogin()">🏆 عرض الترتيب</button>
+    <div id="lbError" class="login-error hidden"></div>
+  </div>
+</div>
+
+<!-- ===== MAIN ===== -->
+<div class="main-wrap" id="mainWrap">
+
+  <header>
+    <img src="logo.gif" alt="Logo">
+    <div class="header-text">
+      <h1>LEADERBOARD</h1>
+      <p>Black Out · ترتيب مسؤولي الراديو</p>
+    </div>
+    <div class="header-badge"><span class="live-dot"></span> مباشر</div>
+  </header>
+
+  <div class="container">
+
+    <!-- Stats -->
+    <div class="stats-row" id="statsRow">
+      <div class="stat-card">
+        <div class="stat-num" id="statTotal">—</div>
+        <div class="stat-label">إجمالي التقارير</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" id="statOfficers">—</div>
+        <div class="stat-label">عدد الضباط</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" id="statTop">—</div>
+        <div class="stat-label">الأعلى نشاطاً</div>
+      </div>
+    </div>
+
+    <!-- Podium -->
+    <div class="section-title">🥇 المراكز الثلاثة الأولى</div>
+    <div class="podium" id="podium"></div>
+
+    <!-- Table -->
+    <div style="display:flex;align-items:center;margin-bottom:16px;">
+      <div class="section-title" style="flex:1;margin-bottom:0">📋 الترتيب الكامل</div>
+      <button class="refresh-btn" onclick="loadLeaderboard()">🔄 تحديث</button>
+    </div>
+
+    <div id="loadingState" class="loading">
+      <div class="spin"></div>
+      <div>جاري تحميل البيانات...</div>
+    </div>
+
+    <div class="table-wrap hidden" id="tableWrap">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>اسم الضابط</th>
+            <th>عدد التقارير</th>
+            <th>آخر تقرير</th>
+          </tr>
+        </thead>
+        <tbody id="leaderboardBody"></tbody>
+      </table>
+    </div>
+
+    <div id="emptyState" class="empty-state hidden">
+      <div class="icon">📭</div>
+      <div>لا توجد بيانات بعد</div>
+      <div style="font-size:.8rem;margin-top:6px">سيظهر الترتيب بعد إرسال أول تقرير</div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// ===== CONFIG =====
+const GIST_TOKEN = "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";
+const GIST_ID    = "6220e5ffec19244014a7b0f921206a83";
+const LB_CODE    = "admin2025"; // ← كود دخول لوحة الترتيب — غيّره
+
+// ===== Particles =====
+(function () {
+  const c = document.getElementById("particles");
+  for (let i = 0; i < 25; i++) {
+    const p = document.createElement("div");
+    p.className = "particle";
+    p.style.left = Math.random() * 100 + "vw";
+    p.style.width = p.style.height = (Math.random() * 2 + 1) + "px";
+    p.style.animationDuration = (Math.random() * 16 + 10) + "s";
+    p.style.animationDelay = (Math.random() * 15) + "s";
+    c.appendChild(p);
+  }
+})();
+
+// ===== Login =====
+document.getElementById("lbCode").addEventListener("keydown", e => { if (e.key==="Enter") doLbLogin(); });
+
+function doLbLogin() {
+  const code = document.getElementById("lbCode").value.trim();
+  const err  = document.getElementById("lbError");
+  err.classList.add("hidden");
+
+  if (code !== LB_CODE) {
+    err.textContent = "❌ الكود خاطئ";
+    err.classList.remove("hidden");
+    return;
+  }
+
+  document.getElementById("loginWrap").style.display = "none";
+  const main = document.getElementById("mainWrap");
+  main.style.display = "block";
+  setTimeout(() => main.classList.add("visible"), 30);
+  loadLeaderboard();
+}
+
+// ===== Load Leaderboard =====
+async function loadLeaderboard() {
+  document.getElementById("loadingState").classList.remove("hidden");
+  document.getElementById("tableWrap").classList.add("hidden");
+  document.getElementById("emptyState").classList.add("hidden");
+
+  try {
+    const res = await fetch(`https://api.github.com/gists/${GIST_ID}`, {
+      headers: {
+        "Authorization": `token ${GIST_TOKEN}`,
+        "Accept": "application/vnd.github.v3+json"
+      }
+    });
+    const gistData = await res.json();
+    const raw = gistData.files?.["leaderboard.json"]?.content || "{}";
+    let board = {};
+    try { board = JSON.parse(raw); } catch(e) {}
+
+    const entries = Object.values(board).sort((a, b) => b.reports - a.reports);
+    renderLeaderboard(entries);
+  } catch (err) {
+    document.getElementById("loadingState").innerHTML = `
+      <div style="color:#fca5a5">❌ فشل تحميل البيانات<br>
+      <small>تأكد من إعداد GIST_TOKEN و GIST_ID</small></div>`;
+  }
+}
+
+function renderLeaderboard(entries) {
+  document.getElementById("loadingState").classList.add("hidden");
+
+  if (entries.length === 0) {
+    document.getElementById("emptyState").classList.remove("hidden");
+    return;
+  }
+
+  // Stats
+  const total = entries.reduce((s, e) => s + e.reports, 0);
+  document.getElementById("statTotal").textContent = total;
+  document.getElementById("statOfficers").textContent = entries.length;
+  document.getElementById("statTop").textContent = entries[0]?.name?.split(" ")[0] || "—";
+
+  // Podium (top 3)
+  const medals = ["🥇","🥈","🥉"];
+  const cls    = ["first","second","third"];
+  const podium = document.getElementById("podium");
+  podium.innerHTML = "";
+
+  const top = entries.slice(0, 3);
+  // reorder: 2nd, 1st, 3rd
+  const order = [1, 0, 2].filter(i => top[i]);
+  order.forEach(i => {
+    if (!top[i]) return;
+    const e = top[i];
+    const div = document.createElement("div");
+    div.className = `podium-item ${cls[i]}`;
+    div.innerHTML = `
+      <div class="podium-rank-badge">${i+1}</div>
+      <div class="podium-crown">${medals[i]}</div>
+      <div class="podium-name">${e.name}</div>
+      <div class="podium-score">${e.reports}</div>
+      <div class="podium-label">تقرير</div>
+      <div class="podium-rank-text">${e.rank || ""}</div>
+    `;
+    podium.appendChild(div);
+  });
+
+  // Table
+  const tbody = document.getElementById("leaderboardBody");
+  tbody.innerHTML = "";
+  entries.forEach((e, i) => {
+    const rankNum = i + 1;
+    const cls_r = rankNum===1?"gold":rankNum===2?"silver":rankNum===3?"bronze":"normal";
+    const date = e.lastReport
+      ? new Date(e.lastReport).toLocaleDateString("ar-SA",{year:"numeric",month:"short",day:"numeric"})
+      : "—";
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td><span class="rank-cell ${cls_r}">${rankNum}</span></td>
+      <td class="name-cell">${e.name}<span class="badge-rank">${e.rank||""}</span></td>
+      <td class="score-cell">${e.reports}</td>
+      <td class="date-cell">${date}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+
+  document.getElementById("tableWrap").classList.remove("hidden");
+}
+</script>
+</body>
+</html>

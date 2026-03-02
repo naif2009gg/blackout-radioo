@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Black Out | نظام الراديو</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Cairo:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="particles" id="particles"></div>
+
+<!-- ===== LOGIN PAGE ===== -->
+<div id="loginPage" class="page-wrap">
+  <div class="login-box">
+    <img src="logo.gif" alt="Black Out Logo" class="login-logo">
+    <div class="login-server-name">Black Out</div>
+    <div class="login-sub">نظام تقارير مسؤول الراديو الرسمي</div>
+
+    <div class="login-divider"></div>
+
+    <div class="login-form-group">
+      <label class="login-label">اسم الشخصية في اللعبة <span class="req">*</span></label>
+      <input type="text" id="loginName" placeholder="اكتب اسم شخصيتك..." class="login-input">
+    </div>
+
+    <div class="login-form-group">
+      <label class="login-label">كود الدخول <span class="req">*</span></label>
+      <input type="password" id="loginCode" placeholder="••••••••" class="login-input">
+      <p class="login-hint">💬 تواصل مع إدارة السيرفر على ديسكورد للحصول على الكود</p>
+    </div>
+
+    <button class="login-btn" onclick="doLogin()">
+      <span id="loginText">🔓 تسجيل الدخول</span>
+      <div id="loginSpinner" class="spinner hidden"></div>
+    </button>
+
+    <div id="loginError" class="login-error hidden">❌ الكود خاطئ أو غير مخوّل للدخول</div>
+
+    <div class="login-footer">
+      <span>🔒 للضباط المخوّلين فقط</span>
+      <span>·</span>
+      <span>Black Out</span>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MAIN SITE ===== -->
+<div id="mainSite" class="hidden-page">
+
+  <div class="header">
+    <img src="logo.gif" alt="Logo" class="header-logo">
+    <div class="header-text">
+      <h1>Black Out</h1>
+      <p>نظام تقارير الراديو الرسمي</p>
+    </div>
+    <div class="header-officer" id="headerOfficer"></div>
+    <div class="status-bar">
+      <div class="status-dot"></div>
+      <span class="status-text">LIVE</span>
+    </div>
+  </div>
+
+  <div class="container">
+
+    <div class="page-intro">
+      <div class="intro-left">
+        <div class="intro-icon">📻</div>
+        <div>
+          <h2>نموذج تقرير مسؤول الراديو</h2>
+          <p>عبّئ جميع الحقول بدقة · سيُرسل التقرير تلقائياً إلى روم الديسكورد</p>
+        </div>
+      </div>
+      <div class="intro-tag">RADIO REPORT</div>
+    </div>
+
+    <form id="reportForm">
+
+      <!-- القسم 1 -->
+      <div class="card" style="animation-delay:0.05s">
+        <div class="section-title"><span class="sec-num">01</span> معلومات مسؤول الراديو</div>
+        <div class="grid-2">
+          <div class="form-group">
+            <label>اسم الشخصية <span class="req">*</span></label>
+            <input type="text" id="officerName" placeholder="اسم شخصيتك في اللعبة" required>
+          </div>
+          <div class="form-group">
+            <label>الرتبة <span class="req">*</span></label>
+            <select id="rank" required>
+              <option value="">— اختر الرتبة —</option>
+              <optgroup label="⚔️ الرتب العسكرية">
+                <option>Cadet Solo</option>
+                <option>Cadet Officer</option>
+                <option>Officer I</option>
+                <option>Officer II</option>
+                <option>Officer III</option>
+                <option>Senior Officer</option>
+                <option>Sergeant</option>
+                <option>First Sergeant</option>
+                <option>Staff Sergeant</option>
+              </optgroup>
+              <optgroup label="🎖️ الأفراد">
+                <option>Lieutenant</option>
+                <option>First Lieutenant</option>
+                <option>Captain</option>
+                <option>Major</option>
+                <option>Lieutenant Colonel</option>
+                <option>Colonel</option>
+                <option>Brigadier General</option>
+                <option>Major General</option>
+                <option>Lieutenant General</option>
+                <option>Deputy LSPD Chief</option>
+                <option>LSPD Chief General</option>
+                <option>Deputy Police Chief</option>
+                <option>Police Chief</option>
+                <option>Deputy Minister of Interior</option>
+                <option>Minister of Interior</option>
+              </optgroup>
+            </select>
+          </div>
+        </div>
+        <div class="grid-2">
+          <div class="form-group">
+            <label>اليونت (Unit) <span class="req">*</span></label>
+            <input type="text" id="unit" placeholder="مثال: 1-Adam-4" required>
+          </div>
+          <div class="form-group">
+            <label>تاريخ الجلسة <span class="req">*</span></label>
+            <input type="date" id="sessionDate" required>
+          </div>
+        </div>
+        <div class="grid-2">
+          <div class="form-group">
+            <label>مدة مسك الراديو <span class="req">*</span></label>
+            <input type="text" id="duration" placeholder="مثال: ساعتين" required>
+          </div>
+          <div class="form-group">
+            <label>عدد المتواجدين في الراديو <span class="req">*</span></label>
+            <input type="number" id="radioCount" placeholder="مثال: 5" min="0" max="100" required oninput="this.value=this.value.replace(/[^0-9]/g,'')">
+          </div>
+        </div>
+      </div>
+
+      <!-- القسم 2 -->
+      <div class="card" style="animation-delay:0.1s">
+        <div class="section-title"><span class="sec-num">02</span> المتواجدون في الراديو</div>
+        <p class="hint">أضف أسماء الضباط الذين كانوا في الراديو معك</p>
+        <div id="radioMembers" class="list-wrap">
+          <div class="member-item">
+            <span class="num-badge">1</span>
+            <input type="text" placeholder="اسم الشخصية" class="member-input">
+            <input type="text" placeholder="اليونت (مثال: 1-Adam-4)" class="member-unit-input">
+            <button type="button" class="rm-btn" onclick="removeMember(this)">✕</button>
+          </div>
+        </div>
+        <button type="button" class="add-btn" onclick="addMember()"><span>+</span> إضافة ضابط</button>
+      </div>
+
+      <!-- القسم 3 -->
+      <div class="card" style="animation-delay:0.15s">
+        <div class="section-title"><span class="sec-num">03</span> الإنجازات خلال الجلسة</div>
+        <p class="hint">أدخل كل إنجاز أو حدث مهم قمت به</p>
+        <div id="achievementsList" class="list-wrap">
+          <div class="achievement-item">
+            <span class="num-badge ach">1</span>
+            <input type="text" placeholder="مثال: تنسيق مطاردة والقبض على المشتبه به" class="ach-input">
+            <button type="button" class="rm-btn" onclick="removeAch(this)">✕</button>
+          </div>
+        </div>
+        <button type="button" class="add-btn" onclick="addAch()"><span>+</span> إضافة إنجاز</button>
+      </div>
+
+      <!-- القسم 4 -->
+      <div class="card" style="animation-delay:0.2s">
+        <div class="section-title"><span class="sec-num">04</span> حالة الخطورة</div>
+
+        <div class="form-group">
+          <label>حالة الخطورة <span class="req">*</span></label>
+          <div class="danger-group">
+            <label class="danger-opt" data-level="1">
+              <input type="radio" name="danger" value="🟢 هادئة">
+              <span class="danger-inner"><span class="d-dot green"></span> هادئة</span>
+            </label>
+            <label class="danger-opt" data-level="2">
+              <input type="radio" name="danger" value="🟡 متوسطة">
+              <span class="danger-inner"><span class="d-dot yellow"></span> متوسطة</span>
+            </label>
+            <label class="danger-opt" data-level="3">
+              <input type="radio" name="danger" value="🔴 عالية">
+              <span class="danger-inner"><span class="d-dot red"></span> عالية</span>
+            </label>
+            <label class="danger-opt" data-level="4">
+              <input type="radio" name="danger" value="⚫ بالغة الخطورة">
+              <span class="danger-inner"><span class="d-dot black"></span> بالغة الخطورة</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>ملاحظات إضافية (اختياري)</label>
+          <textarea id="notes" placeholder="أي ملاحظات إضافية..."></textarea>
+        </div>
+      </div>
+
+      <button type="submit" class="submit-btn" id="submitBtn">
+        <span id="submitText">📤 إرسال التقرير إلى الديسكورد</span>
+        <div id="submitSpinner" class="spinner hidden"></div>
+      </button>
+
+    </form>
+
+    <div id="successMsg" class="success-msg hidden">
+      <div class="success-glow"></div>
+      <div class="success-icon">✅</div>
+      <h3>تم إرسال التقرير بنجاح!</h3>
+      <p>وصل تقريرك لروم الديسكورد الحين 🎉</p>
+      <button onclick="resetForm()" class="reset-btn">📋 إرسال تقرير جديد</button>
+    </div>
+
+    <div id="errorMsg" class="error-msg hidden"></div>
+
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
